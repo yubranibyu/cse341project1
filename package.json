@@ -1,0 +1,26 @@
+{
+  "name": "cse341project1",
+  "version": "1.0.0",
+  "description": "Byu project web services",
+  "homepage": "https://github.com/yubranibyu/cse341project1#readme",
+  "bugs": {
+    "url": "https://github.com/yubranibyu/cse341project1/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yubranibyu/cse341project1.git"
+  },
+  "license": "ISC",
+  "author": "Yubrani Yaguaramay",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  }
+}
