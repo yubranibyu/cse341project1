@@ -1,25 +1,36 @@
 const mongodb = require('../data/database');
-
-const ObjectId = require('mongodb').ObjectId;
+const { ObjectId } = require('mongodb');
 
 const getAll = async (req, res) => {
-      const result = await mongodb.getDatabase().db('users').collection('users').find();
-    result.toArray().then((users) => {
-        res.setHeader('Content-Type', 'application/json');
-        res.status(200).json(users);
-    });
-}
+  try {
+    const db = mongodb.getDB();
+    const users = await db.collection('users').find().toArray();
+
+    res.status(200).json(users);
+  } catch (err) {
+    console.error('Failed obtaining users:', err);
+    res.status(500).json({ error: 'Failed obtaining users' });
+  }
+};
 
 const getSingle = async (req, res) => {
+  try {
     const userId = new ObjectId(req.params.id);
-    const result = await mongodb.getDatabase().db('users').collection('users').find({ _id: userId });
-    result.toArray().then((users) => {
-        res.setHeader('Content-Type', 'application/json');
-        res.status(200).json(users);
-    });
-}
+    const db = mongodb.getDB();
+    const user = await db.collection('users').findOne({ _id: userId });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    console.error('Failed obtaining user:', err);
+    res.status(500).json({ error: 'Failed obtaining user' });
+  }
+};
 
 module.exports = {
-    getAll,
-    getSingle
+  getAll,
+  getSingle,
 };
