@@ -2,6 +2,7 @@ const mongodb = require('../data/database');
 const { ObjectId } = require('mongodb');
 
 const getAll = async (req, res) => {
+  //  #swagger.tags=['Users']
   try {
     const db = mongodb.getDB();
     const users = await db.collection('users').find().toArray();
@@ -14,6 +15,7 @@ const getAll = async (req, res) => {
 };
 
 const getSingle = async (req, res) => {
+  //  #swagger.tags=['Users']
   try {
     const userId = new ObjectId(req.params.id);
     const db = mongodb.getDB();
@@ -30,7 +32,56 @@ const getSingle = async (req, res) => {
   }
 };
 
+const createUser = async (req, res) => {
+  //  #swagger.tags=['Users']
+  
+  const user = {
+    FirstName: req.body.FirstName,
+    LastName: req.body.LastName,
+    email: req.body.email,
+    favoriteColor: req.body.favoriteColor,
+    birthday: req.body.birthday
+  };
+  const response = await mongodb.getDB().collection('users').insertOne(user);
+  if(response.acknowledged) {
+    res.status(204).send();
+  } else {
+    res.status(500).json(response.error || 'Some error occurred while creating the user.');
+  }
+}
+const updateUser = async (req, res) => {
+  //  #swagger.tags=['Users']
+  const userId = new ObjectId(req.params.id);
+  const user = {
+    FirstName: req.body.FirstName,
+    LastName: req.body.LastName,
+    email: req.body.email,
+    favoriteColor: req.body.favoriteColor,
+    birthday: req.body.birthday
+  };
+  const response = await mongodb.getDB().collection('users').replaceOne({ _id: userId }, user);
+  if(response.modifiedCount > 0) {
+    res.status(204).send();
+  } else {
+    res.status(500).json(response.error || 'Some error occurred while updating the user.');
+  }
+};
+
+const deleteUser = async (req, res) => {
+  //  #swagger.tags=['Users']
+  const userId = new ObjectId(req.params.id);
+  const response = await mongodb.getDB().collection('users').deleteOne({ _id: userId });
+  if (response.deletedCount > 0) {
+    res.status(204).send();
+  } else {
+    res.status(500).json(response.error || 'Some error occurred while deleting the user.');
+  }
+};
+
 module.exports = {
   getAll,
   getSingle,
+  createUser,
+  updateUser,
+  deleteUser
 };
